@@ -10,20 +10,10 @@ import requests
 import time
 import base64
 import StringIO
-from pyth.plugins.rtf15.reader import Rtf15Reader
-from pyth.plugins.plaintext.writer import PlaintextWriter
-from bs4 import BeautifulSoup
-import pandas as pd
-from docx import Document
-import StringIO
-
-import codecs
 
 import string
 
 import re
-
-import psycopg2
 
 import json
 import time
@@ -36,7 +26,6 @@ import csv
 
 csv.field_size_limit(sys.maxsize)
 
-import shutil
 
 printable = set(string.printable)
 

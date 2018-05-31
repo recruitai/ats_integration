@@ -6,6 +6,10 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+
+recruit_ai_url = os.getenv('RECRUIT_AI_URL')
+recruit_ai_key = os.getenv('RECRUIT_AI_KEY')
+
 class Candidate():
 
     def __init__(self):
@@ -74,55 +78,9 @@ class Position():
         self.position_location = ""
         self.open_closed = ""
 
-class Interview():
-
-    def __init__(self):
-
-        self.id = ""
-        self.job_id = ""
-        self.candidate_id = ""
-        self.company_id = ""
-        self.interview_status = ""
-        self.interview_type = ""
-        self.date_entered = ""
-        self.last_modified = ""
-        self.company_name = ""
-        self.appointment_date = ""
-        self.arranged_date = ""
-
-class Placement():
-
-    def __init__(self):
-
-        self.id = ""
-        self.job_id = ""
-        self.candidate_id = ""
-        self.company_id = ""
-        self.date_entered = ""
-        self.last_modified = ""
-        self.company_name = ""
-        self.placement_date = ""
-        self.placed_by = ""
-
-
-class Company():
-
-    def __init__(self):
-
-        self.id = ""
-        self.company_name = ""
-        self.country = ""
-
 
 def write_candidate_data(candidates):
 
-
-    #"https://localhost:1111/public/candidate"
-
-    #headers token 123456
-    #[{"key":"Content-Type","value":"application/x-www-form-urlencoded","description":""}]
-
-    #{"Location":"Tokyo","CandidateSource":"Indeed","EmploymentPreference":"Contract","Experience":"Level1"}
     for candidate in candidates:
 
         pdata = {}
@@ -143,7 +101,7 @@ def write_candidate_data(candidates):
 
         pdata["Attributes"] = json.dumps(attrs)
 
-        r = requests.post("https://localhost:1111/public/candidate",data=pdata, headers={"token":"123456"},verify=False)
+        r = requests.post(recruit_ai_url + "/public/candidate",data=pdata, headers={"token":recruit_ai_key},verify=False)
 
         print(r.status_code, r.reason)
 
@@ -169,100 +127,6 @@ def write_position_data(positions):
 
         pdata["Attributes"] = json.dumps(attrs)
 
-        r = requests.post("https://localhost:1111/public/position",data=pdata, headers={"token":"123456"},verify=False)
+        r = requests.post(recruit_ai_url + "/public/position",data=pdata, headers={"token":recruit_ai_key},verify=False)
 
         print(r.status_code, r.reason)
-
-
-    #validate_data = pd.read_csv(target_dir + "/position_index_data.tsv", dtype=object, header=0,  delimiter="\t", quotechar='"' , lineterminator='\n', quoting=3, skipinitialspace=True)
-    #print("loaded {0} records.".format(validate_data.count()))
-
-def write_interview_drop(interviews,drop_tag,drop_location):
-
-    target_dir = drop_location + drop_tag
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
-
-    f = open(target_dir + "/interview_index_data.tsv", "w")
-    f.write("ID\tJobId\tCandidateId\tAppointmentDate\tArrangedDate\tCompanyName\tInterviewType\tInterviewStatus\n")
-
-    for interview in interviews:
-        f.write("\"")
-        f.write(interview.id)
-        f.write("\"\t\"")
-        f.write(interview.job_id)
-        f.write("\"\t\"")
-        f.write(interview.candidate_id)
-        f.write("\"\t\"")
-        f.write(interview.appointment_date)
-        f.write("\"\t\"")
-        f.write(interview.arranged_date)
-        f.write("\"\t\"")
-        f.write(interview.company_name)
-        f.write("\"\t\"")
-        f.write(interview.interview_type)
-        f.write("\"\t\"")
-        f.write(interview.interview_status)
-        f.write("\"")
-        f.write("\n")
-
-    f.close()
-
-    validate_data = pd.read_csv(target_dir + "/interview_index_data.tsv", dtype=object, header=0,  delimiter="\t", quotechar='"' , lineterminator='\n', quoting=3, skipinitialspace=True)
-    print("loaded {0} records.".format(validate_data.count()))
-
-def write_placement_drop(placements,drop_tag,drop_location):
-
-    target_dir = drop_location + drop_tag
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
-
-    f = open(target_dir + "/placement_index_data.tsv", "w")
-    f.write("ID\tJobId\tCandidateId\tCompanyId\tCompanyName\tPlacementDate\tPlacedBy\n")
-
-    for placement in placements:
-        f.write("\"")
-        f.write(placement.id)
-        f.write("\"\t\"")
-        f.write(placement.job_id)
-        f.write("\"\t\"")
-        f.write(placement.candidate_id)
-        f.write("\"\t\"")
-        f.write(placement.company_id)
-        f.write("\"\t\"")
-        f.write(placement.company_name)
-        f.write("\"\t\"")
-        f.write(placement.placement_date)
-        f.write("\"\t\"")
-        f.write(placement.placed_by)
-        f.write("\"")
-        f.write("\n")
-
-    f.close()
-
-    validate_data = pd.read_csv(target_dir + "/placement_index_data.tsv", dtype=object, header=0,  delimiter="\t", quotechar='"' , lineterminator='\n', quoting=3, skipinitialspace=True)
-    print("loaded {0} records.".format(validate_data.count()))
-
-def write_company_drop(companies,drop_tag,drop_location):
-
-    target_dir = drop_location + drop_tag
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
-
-    f = open(target_dir + "/company_index_data.tsv", "w")
-    f.write("ID\tCompanyName\tCountry\n")
-
-    for company in companies:
-        f.write("\"")
-        f.write(company.id)
-        f.write("\"\t\"")
-        f.write(company.company_name)
-        f.write("\"\t\"")
-        f.write(company.country)
-        f.write("\"")
-        f.write("\n")
-
-    f.close()
-
-    validate_data = pd.read_csv(target_dir + "/company_index_data.tsv", dtype=object, header=0,  delimiter="\n", quotechar='"' , lineterminator='\n', quoting=3, skipinitialspace=True)
-    print("loaded {0} records.".format(validate_data.count()))
