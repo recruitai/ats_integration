@@ -47,4 +47,4 @@ if __name__ == '__main__':
     client_id = sys.argv[3]
     client_secret = sys.argv[4]
 
-    write_credentials(username,password,client_id,client_secret,app_url)
+    write_credentials(username,password,client_id,client_secret)
