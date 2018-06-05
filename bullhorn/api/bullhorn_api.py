@@ -161,7 +161,7 @@ def sync_candidates(date_since,date_now, rest):
             i=1
             k=0
             while i < pages+1:
-                #try:
+                try:
                     start = (i*100)
                     print(url+ "&start=" + str(start))
                     jres = rest.make_rest_call(url+ "&start=" + str(start))
@@ -175,9 +175,9 @@ def sync_candidates(date_since,date_now, rest):
                         save_results(reslist,file_part_count)
                         file_part_count+=1
                         reslist=[]
-                #except:
-                #    print("failed to connect- retrying")
-                #    time.sleep(0.5)
+                except:
+                   print("failed to connect- retrying")
+                   time.sleep(0.5)
             return True
         else:
             return False

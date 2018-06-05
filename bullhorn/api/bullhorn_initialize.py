@@ -7,7 +7,7 @@ import os
 #pass API details
 app_path = os.environ.get('CREDENTIAL_LOCATION')
 
-def write_credentials(username,password,client_id,client_secret,app_url):
+def write_credentials(username,password,client_id,client_secret):
 
     creds = {}
     creds["username"] = username
@@ -31,6 +31,8 @@ def write_credentials(username,password,client_id,client_secret,app_url):
     with open(app_path + '/components.json', 'w') as outfile:
         json.dump(comps, outfile)
 
+    print("Success.")
+
     #print(app_url + "/bh_pos.html?bh=" + quark_token)
     #metas = rest.make_rest_call("meta/Candidate?fields=*&meta=full")
 
@@ -44,6 +46,5 @@ if __name__ == '__main__':
     password = sys.argv[2]
     client_id = sys.argv[3]
     client_secret = sys.argv[4]
-    app_url = sys.argv[5]
 
     write_credentials(username,password,client_id,client_secret,app_url)

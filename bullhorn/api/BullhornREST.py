@@ -3,6 +3,7 @@ import requests
 import os
 from urlparse import urlparse
 from urlparse import parse_qs
+import sys
 
 def make_get_request(url):
 
@@ -68,6 +69,8 @@ class BullhornREST:
 
             response = requests.get(self.authorization_url,timeout=5)
 
+            #print(response.url)
+
             parsed_url = urlparse(response.url)
             qs = parse_qs(parsed_url.query)
 
@@ -89,7 +92,10 @@ class BullhornREST:
                     print(access_token_details)
                     print("Unable to authorize")
                     auth_error = True
-                
+            else:
+                print("code not found, possibly an incorrect password")
+                sys.exit()
+
         else:
 
             #6a. Get refresh token

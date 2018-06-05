@@ -1,0 +1,232 @@
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+
+  <title>Recruit AI</title>
+
+  <!-- Bootstrap core CSS -->
+
+  <!-- Material Design fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <!-- Bootstrap Material Design -->
+  <link rel="stylesheet" href="../css/bootstrap-material-design.min.css">
+  <link href="../css/styles.c87f976eb899312c16c2.bundle.css" rel="stylesheet">
+
+  <style>
+    .dropdown-menu {
+      left: 0;
+      max-width: 180px;
+    }
+
+    .dropdown-menu .dropdown-item {
+      padding-top: 0.4rem!important;
+      padding-bottom: 0.4rem!important;
+      font-size: 13px!important;
+    }
+
+    table {
+      font-size: 13px!important;
+    }
+
+    a {
+      color: #2288cc!important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <iframe style="display:none" id="popup_if"></iframe>
+
+  <div class="container-fluid">
+
+    <div id="tfilter">
+
+      <div class="panel">
+
+        <div>
+          <hr/>
+          <div id="filterson"></div>
+          <div id="filterbank" style="padding-left:40px"></div>
+        </div>
+
+        <hr/>
+
+        <div>
+
+          <div id="searchResults">
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+
+  <script src="../js/bootstrap.min.js"></script>
+
+
+  <script src="../jquery-cookie/jquery.cookie-1.4.1.min.js"></script>
+
+  <script src="../moment/moment.min.js"></script>
+
+  <script src="js/filterbank.js"></script>
+
+  <script>
+
+    function parseQueryString() {
+      var parsedParameters = {},
+        uriParameters = location.search.substr(1).split('&');
+
+      for (var i = 0; i < uriParameters.length; i++) {
+        var parameter = uriParameters[i].split('=');
+        parsedParameters[parameter[0]] = decodeURIComponent(parameter[1]);
+      }
+
+      return parsedParameters;
+    }
+
+    var candid = ""
+    var positionText = ""
+    searchType = "candidate"
+
+    $(document).ready(function() {
+      var params = parseQueryString()
+      candid = params["c"]
+
+      candidateIndexFilters = {}
+      candidateIndexFilters = getFilterDefaults("position")
+      // positionIndexFilters = {}
+      // positionIndexFilters["OpenClosed"] = "open"
+
+      refreshSimilarCandidates()
+
+    })
+
+    function refreshSimilarCandidates(){
+
+
+      getCandidate(candid, function(candidateResult) {
+
+          candidateFilters("position",candidateResult.positionFilters,refreshSimilarCandidates)
+          console.log(candidateResult)
+          populateCandidateResults(candidateResult.positions, "#searchResults", "simlink")
+
+        })
+
+    }
+
+    function getCandidate(cvid, callback) {
+
+        //candidateSimilarIndexFilters["Location"] = "japan"
+
+
+        $.getJSON("/public/candidate/" + cvid + "/" + JSON.stringify({})+ "/" + JSON.stringify(candidateIndexFilters), function(similars) {
+
+            if(similars.candidates){
+            similars.candidates.sort(function(a, b) {
+                return parseFloat(b.distance) - parseFloat(a.distance);
+            })
+          }
+
+          callback(similars)
+
+        })
+
+    }
+
+    function populateCandidateResults(results, target, linkid, poptype) {
+
+      if (results) {
+
+        var res2html = ""
+
+        res2html += '<table class="table">'
+        res2html += '<thead>'
+        res2html += '<tr>'
+        res2html += '<th>#</th>'
+        res2html += '<th>Job Title</th>'
+        res2html += '<th>Company</th>'
+        res2html += '<th>Location</th>'
+        res2html += '<th>Score</th>'
+        res2html += '</tr>'
+        res2html += '</thead>'
+        res2html += '<tbody>'
+
+        for (var i = 0; i < results.length; i++) {
+
+
+          results[i].distance = ((results[i].distance)).toFixed(2)
+
+          var fromNow = moment(new Date(results[i].lastModified)).fromNow();
+          results[i].lastModifiedFormatted = moment(new Date(results[i].lastModified)).fromNow();
+
+          res2html += getPositionTemplate2(results[i], target, linkid, poptype, i)
+
+        }
+
+        res2html += '</tbody>'
+        res2html += '</table>'
+
+        $(target).html(res2html)
+
+
+        for (var i = 0; i < results.length; i++) {
+
+          $("#" + linkid + i).unbind('click');
+          $("#" + linkid + i).click(results[i], function(e) {
+
+            var bhId = e.data.PositionID.replace("p", "")
+
+            console.log("bhId")
+            console.log(bhId)
+
+            //var popup = window);
+            //window.parent.postMessage("test", '*')
+            document.getElementById('popup_if').contentWindow.location = "https://cls91.bullhornstaffing.com/BullhornStaffing/OpenWindow.cfm?id=" + bhId + "&entity=JobOrder&View=Overview&staffing=1";
+
+          })
+
+        }
+
+      }
+
+    }
+
+    function getPositionTemplate2(result, target, linkid, poptype, index) {
+
+      var html = ''
+      html += '<tr>'
+      html += '<th scope="row">'
+      html += '#' + (index + 1)
+      html += '</th>'
+      html += '<td>'
+      html += '<a style="cursor: pointer;cursor: hand;" id="' + linkid + index + '">' + result.JobTitle + '</a>'
+      html += '</td>'
+      html += '<td>'
+      html += result.Company
+      html += '</td>'
+      html += '<td><span style="text-transform:capitalize">'
+      html += result.Attributes.Location
+      html += '</span></td>'
+      html += '<td>'
+      html += result.distance
+      html += '</td>'
+      html += '</tr>'
+
+      return html
+
+    }
+  </script>
+</body>
+
+</html>
