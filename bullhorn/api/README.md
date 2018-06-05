@@ -72,7 +72,7 @@ cd ats_integration/bullhorn/api
 Get your API login details for Bullhorn and run the bullhorn_initialize.py script with the following parameters (ensure you escape the password correctly)
 
 ```
-python bullhorn_initialize.py  username  password client_id client_secret 
+python bullhorn_initialize.py username password client_id client_secret 
 ```
 
 #### Step 6. Verify the Script runs correctly
