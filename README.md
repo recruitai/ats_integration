@@ -16,12 +16,12 @@ Recommendations are retrieved from the engine using the routes:
 
 Any integration can be done by simply using these 4 routes. This enables a number of scenarios (and combinations of):
 
-Integration performed by Recruit AI tech team
-Integration performed by the customer’s development team or 3rd party
-Support of the integration components by Recruit AI tech team
-Support of the integration components by the customer’s development team or 3rd party
-Development of integration components by customer’s  development team or 3rd party
-Development of integration components by ATS development team
+* Integration performed by Recruit AI tech team
+* Integration performed by the customer’s development team or 3rd party
+* Support of the integration components by Recruit AI tech team
+* Support of the integration components by the customer’s development team or 3rd party
+* Development of integration components by customer’s  development team or 3rd party
+* Development of integration components by ATS development team
 
 The flexibility of allowing customers to perform or support their own integration is important as it means they can retain control of what data we are able to access. For example, they can run the integration API component on their own AWS instance meaning they don’t have to provide us with API keys / login access to their ATS. It also enables them to blind the data before feeding it to Recruit AI.
 
@@ -38,18 +38,16 @@ https://documenter.getpostman.com/view/4472245/RW8CH82p#0a179430-bb9b-487f-9ae3-
 
 The API integration component will generally work as follows (depending on the ATS)
 
-1. Authenticate with the ATS  rest API
-2. Manage a checkpoint- a date/time when data was last requested from the ATS
-3. Request Candidate and Position data from the ATS that has been modified since the last checkpoint
-4. Parse the data into the correct format to feed to Recruit AI
-5. Authenticate with the Recruit AI rest API
-6. Post the data to the /public/candidate and /public/position routes
-
+* Authenticate with the ATS  rest API
+* Manage a checkpoint- a date/time when data was last requested from the ATS
+* Request Candidate and Position data from the ATS that has been modified since the last checkpoint
+* Parse the data into the correct format to feed to Recruit AI
+* Authenticate with the Recruit AI rest API
+* Post the data to the /public/candidate and /public/position routes
 
 The plan is to build out API components in github for all the ATS we encounter. They will likely follow a similar format to the Bullhorn one and can be cloned/adjusted accordingly.
 
 The API components can be implemented in any language/platform however the recommended standard is to use python targeting Ubuntu 16.04
-
 
 ## iFrame based html/css/js component
 
