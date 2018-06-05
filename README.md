@@ -55,8 +55,8 @@ An iFrame component is an html file that gets loaded into an iFrame within the A
 
 In general the work required to adapt the bullhorn html code for a new ATS will involve:
 
-Formatting the HTML/CSS to match the design standards of the ATS
-Making the correct calls to the parent frames to provide navigation
+* Formatting the HTML/CSS to match the design standards of the ATS
+* Making the correct calls to the parent frames to provide navigation
 
 Performing the actual integration will be highly dependent on the ATS and it’s flexibility and security model. With Bullhorn it can all be done from the Admin interface and requires some custom tabs to be created and the correct URLs set for these custom tabs.
 
