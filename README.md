@@ -6,20 +6,13 @@ Recruit AI can integrate with any ATS that supports a rest API interface for req
 
 The Recruit AI engine functions as a black-box, candidates and positions are posted to the system using the routes:
 
-`
-post /public/candidate
-
-post /public/position
-`
-
+`post /public/candidate`
+`post /public/position`
 
 Recommendations are retrieved from the engine using the routes:
 
-`
-get /public/candidate
-
-get /public/position
-`
+`get /public/candidate`
+`get /public/position`
 
 Any integration can be done by simply using these 4 routes. This enables a number of scenarios (and combinations of):
 
