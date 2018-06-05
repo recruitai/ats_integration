@@ -60,7 +60,7 @@ In general the work required to adapt the bullhorn html code for a new ATS will 
 
 Performing the actual integration will be highly dependent on the ATS and it’s flexibility and security model. With Bullhorn it can all be done from the Admin interface and requires some custom tabs to be created and the correct URLs set for these custom tabs.
 
-### Authenticating with Recruit AI
+## Authenticating with Recruit AI
 
 Authentication with Recruit AI happens via an API Key, which will be issued to the integrator when the instance is created. The token is passed in an http header named “token” in order to authenticate.
 
