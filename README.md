@@ -29,8 +29,8 @@ The flexibility of allowing customers to perform or support their own integratio
 
 The API component simply requests data from the ATS rest API interface and feeds it to the Recruit AI rest interface. Recruit AI has two routes available for feeding data:
 	
-/public/candidate
-/public/position
+`/public/candidate`
+`/public/position`
 
 Further documentation is available here:
 
