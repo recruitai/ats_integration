@@ -26,7 +26,6 @@ def write_credentials(username,password,client_id,client_secret):
     comps = {}
     comps["corp_code"] = corp_code
     comps["quark_token"] = quark_token
-    comps["app_url"] = app_url
 
     with open(app_path + '/components.json', 'w') as outfile:
         json.dump(comps, outfile)
