@@ -2,6 +2,7 @@ import json
 import requests
 import os
 import sys
+from flatten_dict import flatten
 
 def make_get_request(url):
     done = False
@@ -12,7 +13,9 @@ def make_get_request(url):
     jres = response.json()
     response.close()
     done = True
-    return jres
+
+    result = jres["response"]["result"]
+    return result#messy due to nested dictionary should flatten
 
 def make_get_request_txt(url):#get the initial token (Errors out if its JSON)
     done = False
@@ -52,6 +55,7 @@ class ZohoREST:
         self.rest_url = ""
         self.rest_token = None#might need to update_rest_token
 
+
     def update_rest_token(self):
 
         auth_error = False
@@ -75,19 +79,37 @@ class ZohoREST:
                 with open(self.app_path + '/access_token_details.json', 'w') as outfile:
                     outfile.write(access_token_details)
 
-                with open(self.app_path + '/access_token_details.json', 'r') as read_outfile:
+                with open(self.app_path + '/access_token_details.json', 'r') as read_outfile:#maybe make this a function
                     result = read_outfile.read().strip("AUTHTOKEN=").split('\n')
                     access_tok = result[2].lower()#assigning lowercase authtoken=xyz
+                    self.rest_token = access_tok
 
             else:
                 print(access_token_details)
-                print("Unable to authorize")
+                print("Unable to authorize possibly too many tokens.\n")
                 auth_error = True
+
+        #checks if already have the access token so we dont need to create a enw one.
+        elif os.path.exists(self.app_path + '/access_token_details.json'):
+
+            with open(self.app_path + '/access_token_details.json', 'r') as read_outfile:#lambda??
+                contents = read_outfile.read()
+
+                if "FALSE" not in contents:
+                    with open(self.app_path + '/access_token_details.json', 'r') as read_outfile:
+                        result = read_outfile.read().strip("AUTHOKEN=").split('\n')
+                        access_tok = result[2].lower()
+                        self.rest_token = access_tok
+
+                else:
+                    print(contents)
+                    print("Unable to authorize possibly too many tokens.\n")
+                    print("If you need to generate a new token just delete the existing access_token_details.json file.\n")
+                    auth_error = True
 
         else:
 
-            #6a. Get AUTHTOKEN if there isnt one
-
+            #Create new authtoken if there is no access_token_details.json
             print("Creating new access token...")
 
             url = self.auth_url + "apiauthtoken/nb/create?SCOPE=ZohoRecruit/recruitapi&EMAIL_ID={0}&PASSWORD={1}"
@@ -118,16 +140,21 @@ class ZohoREST:
 
             self.rest_token = access_tok
 
-    def make_rest_call(self,url):#add model
+            #?return?
 
-        #some token checks would be nice here
+
+    def make_rest_call(self,url):#add model
+        #some token checks would be nice here or in zoho api?
         #url = "recruit/private/json/{0}/getRecords?"
 
         rurl = self.base_rest_url + url + self.rest_token + "&scope=recruitapi"
+        print(rurl)
         #result = url.format(access_tok)
 
-        result = make_get_request(rurl)#check
-        if "error" in result:
+        result = make_get_request(rurl)
+
+        #print(result)#this works  but lets try to make it flat
+        if "error" in result:#needs to be fixed
             if "code" in result:
                 if result["code"] == result["message"]:
                     self.update_rest_token()
