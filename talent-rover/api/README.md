@@ -2,8 +2,6 @@
 
 ## Introduction
 
-This guide will describe how to set up and configure a Bullhorn API Talent Rover for Recruit AI.
-
 The API Component is in the form of a set of python scripts, which when running will request data from the Talent Rover Salesforce REST API and upload it to the Recruit AI API.
 
 The API integration component works as follows
