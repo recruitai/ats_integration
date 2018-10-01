@@ -83,6 +83,9 @@ def convert_pdf_to_text(fname, pages=None):
     converter.close()
     text = output.getvalue()
     output.close
+
+    print("returning from convert_pdf_to_text")
+
     return text
 
 
@@ -93,9 +96,27 @@ def document_to_text(base64data, document_type, name):
     fres.close()
     text = ""
     if document_type == ".pdf":
-        text = convert_pdf_to_text(name)
+        text = convert_pdf_to_text("/var/tmp/" + name)
     if document_type == ".docx":
-        text = get_docx_text(name)
+        text = get_docx_text("/var/tmp/" + name)
     os.remove("/var/tmp/" + name)
+
+    return text
+
+def document_to_text_bin(binary_data, document_type, name):
+
+    text = ""
+    try:
+        f = open("/var/tmp/" + name, "w+b")
+        binary_format = bytearray(binary_data)
+        f.write(binary_format)
+        f.close()
+        if document_type == ".pdf":
+            text = convert_pdf_to_text("/var/tmp/" + name)
+        if document_type == ".docx":
+            text = get_docx_text("/var/tmp/" + name)
+        os.remove("/var/tmp/" + name)
+    except Exception as e:
+        print(str(e))
 
     return text
