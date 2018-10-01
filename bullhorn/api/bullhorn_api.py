@@ -24,6 +24,10 @@ from BullhornREST import BullhornREST
 
 import csv
 
+from file_processing import get_candidate_resume_text
+
+from bs4 import BeautifulSoup
+
 csv.field_size_limit(sys.maxsize)
 
 
@@ -44,9 +48,15 @@ class MLStripper(HTMLParser):
 
 def strip_tags(html):
     s = MLStripper()
-    s.feed(html)
+    s.feed(html.decode("utf-8"))
     return s.get_data()
 
+def strip_html_bs(data):
+    soup = BeautifulSoup(data,"lxml")
+    for script in soup(["script", "style"]):
+        script.extract()    # rip it out
+    text = soup.get_text()
+    return text
 
 def cleanup_text(text):
 
@@ -172,19 +182,19 @@ def sync_candidates(date_since,date_now, rest):
                     if k == 1:
                         k=0
                         print("saving results...")
-                        save_results(reslist,file_part_count)
+                        save_results(reslist,file_part_count,rest)
                         file_part_count+=1
                         reslist=[]
                 except:
-                   print("failed to connect- retrying")
-                   time.sleep(0.5)
+                  print("failed to connect- retrying")
+                  time.sleep(0.5)
             return True
         else:
             return False
     else:
         return False
 
-def save_results(jres,file_index):
+def save_results(jres,file_index,rest):
 
     candidates=[]
 
@@ -281,9 +291,18 @@ def save_results(jres,file_index):
 
                     candidate.resume_words=cleanup_text(parsed)
 
+                else:
+
+                    rtext = get_candidate_resume_text(cand["id"],rest)
+
+                    candidate.resume_words=cleanup_text(rtext)
+
+
+            #can be lists? check out bh config possibilities
             if "companyName" in cand:
                 if cand["companyName"] != None:
-                    candidate.current_company=cand["companyName"].encode("utf-8").strip()
+                    if len(cand["companyName"]) > 0:
+                        candidate.current_company=cand["companyName"][0].encode("utf-8").strip()
 
             candidates.append(candidate)
 
@@ -323,7 +342,8 @@ def sync_positions(date_since,date_now,countryLookup,rest):
                 addr = pos["address"]
                 if "countryID" in addr:
                     if addr["countryID"] != None:
-                        position.position_location=countryLookup[addr["countryID"]].encode("utf-8")
+                        if addr["countryID"] in countryLookup :
+                            position.position_location=countryLookup[addr["countryID"]].encode("utf-8")
 
                 if "city" in addr:
                     if addr["city"] != None:
@@ -370,7 +390,7 @@ def sync_positions(date_since,date_now,countryLookup,rest):
 
             if "description" in pos:
                 if pos["description"] != None:
-                    position.job_description_words=cleanup_text(pos["description"].encode("utf-8"))
+                    position.job_description_words=cleanup_text(strip_html_bs(pos["description"].encode("utf-8")))
 
             positions.append(position)
 
@@ -390,6 +410,7 @@ def sync(checkpoint_time,items_to_sync,credential_location):
     for cnt in countries["data"]:
         #print (cnt["value"],cnt["label"])
         countryLookup[cnt["value"]] = cnt["label"].lower()
+
 
     dcheck = datetime.strptime(checkpoint_time, '%Y-%m-%dT%H:%M:%S')
     date_since = dcheck.strftime('%Y%m%d%H%M%S')

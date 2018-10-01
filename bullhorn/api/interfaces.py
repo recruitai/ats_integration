@@ -9,6 +9,9 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 recruit_ai_url = os.getenv('RECRUIT_AI_URL')
 recruit_ai_key = os.getenv('RECRUIT_AI_KEY')
+recruit_ai_port =  os.getenv('RECRUIT_AI_PORT')
+
+recruit_ai_url = "http://" + recruit_ai_url + ":" + recruit_ai_port
 
 class Candidate():
 
@@ -79,7 +82,33 @@ class Position():
         self.open_closed = ""
 
 
+def preprocess_candidates(candidates):
+
+    for candidate in candidates:
+        if candidate.experience != "":
+            experience = candidate.experience
+            iexp = -1
+            try:
+                iexp = int(experience)
+            except:
+                pass
+
+            if iexp >= 0 and iexp < 2:
+                candidate.experience_level = "Level1"
+
+            if iexp >= 2 and iexp < 7:
+                candidate.experience_level = "Level2"
+
+            if iexp >= 7 and iexp < 15:
+                candidate.experience_level = "Level3"
+
+            if iexp >= 15:
+                candidate.experience_level = "Level4"
+
+
 def write_candidate_data(candidates):
+
+    preprocess_candidates(candidates)
 
     for candidate in candidates:
 
@@ -97,13 +126,14 @@ def write_candidate_data(candidates):
         attrs["Experience"] = candidate.experience
         attrs["EmploymentPreference"] = candidate.employment_preference
         attrs["CandidateSource"] = candidate.candidate_source
+        attrs["Status"] = candidate.status
         attrs["Location"] = candidate.location
 
         pdata["Attributes"] = json.dumps(attrs)
 
         r = requests.post(recruit_ai_url + "/public/candidate",data=pdata, headers={"token":recruit_ai_key},verify=False)
 
-        print(r.status_code, r.reason)
+        print(r.status_code, r.reason, r.text)
 
 
 def write_position_data(positions):

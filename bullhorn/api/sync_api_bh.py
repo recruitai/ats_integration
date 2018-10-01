@@ -11,9 +11,6 @@ sys.path.append(os.path.dirname('/'.join(sys.path[0].split("/")[0:-1])))
 
 app_root = os.path.dirname(sys.path[0])
 
-
-
-checkpoint_time = "2017-08-28T14%3A43%3A00.72"
 checkpoint_file = os.getenv('CHECKPOINT_FILE')
 credential_location = os.getenv('CREDENTIAL_LOCATION')
 
@@ -46,7 +43,7 @@ checkpoint = read_checkpoint()
 
 checkpoint = checkpoint.replace("\n","")
 
-items_to_sync = ["candidates","positions","interviews","placements"]
+items_to_sync = ["candidates","positions"]
 #items_to_sync = ["positions"]
 while True:
 

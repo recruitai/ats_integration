@@ -13,7 +13,7 @@ def make_get_request(url):
     #print(url)
 
     headers = {"Content-type": "application/json;"}
-    response = requests.get(url, headers=headers,timeout=5)
+    response = requests.get(url, headers=headers,timeout=20)
     #print(base_url + url)
     #print(response.text)
     jres = response.json()
@@ -126,7 +126,6 @@ class BullhornREST:
             rest_details = make_request(url)
 
             #here set rest url and extract token
-
             self.rest_token = rest_details["BhRestToken"]
             self.rest_url = rest_details["restUrl"]
 
@@ -144,6 +143,8 @@ class BullhornREST:
             self.update_rest_token()
 
         rurl = self.rest_url + url + "&BhRestToken=" + self.rest_token
+
+        print(rurl)
         result = make_get_request(rurl)
         if "errorCode" in result:
             if "errorMessageKey" in result:
@@ -158,8 +159,6 @@ class BullhornREST:
     def make_rest_call_post(self,url,data):
 
         rurl = self.rest_url + url + "&BhRestToken=" + self.rest_token
-
         result = make_request(rurl,data)
-        #print(result)
 
         return result
