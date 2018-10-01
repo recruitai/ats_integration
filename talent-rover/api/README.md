@@ -22,7 +22,7 @@ This repo uses the standard REST API. Salesforce enforces atrict API limits at 1
 
 The API is not sandboxed from the Talent Rover application so if the API limits are hit the main application will stop functioning.
 
-With this is mind, the API components monitor the API limits while syncing and stop when a specified threshold is met.
+With this is mind, the API components monitor the API limits while syncing and stops when a specified threshold is met.
 
 ## Configuration
 
