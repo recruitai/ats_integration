@@ -1,4 +1,4 @@
-# Setting up and Configuring a Talent Rover API Component
+# Talent Rover API Component
 
 ## Introduction
 
