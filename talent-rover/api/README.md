@@ -34,5 +34,17 @@ Configuration is via two environment variables and a .json credential file.
 credentials.json
 
 ```
-{"instance_url":"https://xxx.salesforce.com/","username": "YOUR_USERNAME", "client_secret": "YOUR_CLIENT_SECRET", "password": "YOUR_PASSWORD+ACCESS_TOKEN", "client_id": "CLIENT_ID"}
+{"instance_url":"https://xxx.salesforce.com/","username": "YOUR_USERNAME", "client_secret": "YOUR_CLIENT_SECRET", "password": "YOUR_PASSWORD+SECURITY_TOKEN", "client_id": "CLIENT_ID"}
 ```
+
+It is recommended to create a new user for the API sync. The following details are required:
+
+* client_id
+* client_secret
+* username
+* password
+
+See here for further details:
+
+https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_understanding_username_password_oauth_flow.htm
+
