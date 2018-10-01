@@ -1,0 +1,6 @@
+sf_data/*
+sf_query/*
+temp/*
+tr_upload_positions.py
+tr_upload.py
+TalentRoverBULK.py
