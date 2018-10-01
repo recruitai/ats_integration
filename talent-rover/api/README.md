@@ -37,7 +37,7 @@ credentials.json
 {"instance_url":"https://xxx.salesforce.com/","username": "YOUR_USERNAME", "client_secret": "YOUR_CLIENT_SECRET", "password": "YOUR_PASSWORD+SECURITY_TOKEN", "client_id": "CLIENT_ID"}
 ```
 
-It is recommended to create a new user for the API sync with readonly access to the Salesforce objects. The following details are required for the account:
+It is recommended to create a new user account for the API sync with readonly access to the Salesforce objects. The following details are required for the account:
 
 * client_id
 * client_secret
